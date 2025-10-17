@@ -179,7 +179,7 @@ ice core
 - `density.txt`: depth / rel_dens for an ice core
 - `lock_in_depth.txt`: depth / LID (/ opt., rel_unc) for an ice core
 - `thinning.txt`: depth / thinning (/ opt., rel_unc) for an ice core
-- `delta_depths.txt`: depth / Ddepth / Ddepth_unc for an ice core
+- `delta_depths.txt`: air_depth / Ddepth / Ddepth_unc for an ice core
 
 Then you have one directory per site pair, which contains:
 - `parameters_covariance_observations.py`: this file allows to define the correlation of site pair
@@ -288,3 +288,4 @@ What to do if something goes wrong?
 
 Some errors can be eliminated by restarting the kernel in spyder (under "Console">"Restart kernel").
 If the problem persist, please post an email to the author or on the mailing list with the error message appearing on the command line.
+
