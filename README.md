@@ -167,9 +167,9 @@ Then you have one directory per site, which contains:
 - `parameters_covariance_observations.py`: this file allows to define the correlation of site
  specific observations
 - `deposition.txt`: depth / deporate (/ opt., rel_unc)
-- `age_horizons.txt`: depth / age / age_unc for dated horizons for a non-ice-core
-- `age_horizons_C14.txt`: depth / age / age_unc for C14-dated horizons for a non-ice-core
-- `age_intervals.txt`: depth_top / depth_bot / duration / dur_unc for intervals for a non-ice-core
+- `age_horizons.txt`: depth / age / age_unc for dated horizons for a simple archive
+- `age_horizons_C14.txt`: depth / age / age_unc for C14-dated horizons for a simple archive
+- `age_intervals.txt`: depth_top / depth_bot / duration / dur_unc for intervals for a simple archive
 - `ice_age_horizons.txt`: depth / age / age_unc for ice dated horizons for an ice core
 - `air_age_horizons.txt`: depth / age / age_unc for air dated horizons for an ice core
 - `ice_age_intervals.txt`: depth_top / depth_bot / duration / dur_unc for ice intervals for an
@@ -177,6 +177,7 @@ ice core
 - `air_age_intervals.txt`: depth_top / depth_bot / duration / dur_unc for air intervals for an
 ice core
 - `density.txt`: depth / rel_dens for an ice core
+- `compaction_factor.txt`: depth / factor for a simple archive (optional file, factor=1 if absent)
 - `lock_in_depth.txt`: depth / LID (/ opt., rel_unc) for an ice core
 - `thinning.txt`: depth / thinning (/ opt., rel_unc) for an ice core
 - `delta_depths.txt`: air_depth / Ddepth / Ddepth_unc for an ice core
@@ -191,6 +192,7 @@ specific observations
 - `airair_synchro_horizons.txt`: depth1 / depth2 / age_unc for air-air stratigraphic links observations (two ice cores)
 - `iceair_synchro_horizons.txt`: depth1 / depth2 / age_unc for ice-air stratigraphic links observations (two ice cores)
 - `airice_synchro_horizons.txt`: depth1 / depth2 / age_unc for air-ice stratigraphic links observations (two ice cores)
+For all these synchro files, you can add an optional `phasing` column to specify the age1-age2 phasing
 
 A few things you need to know to use paleochrono:
 1) You can use whatever units you want but they need to be consistent. For example, if you use meters for the depths and years for the dated horizons, you need to use meters per years for the accumulation rates. 
