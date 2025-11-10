@@ -342,6 +342,18 @@ class Site(object):
             self.dens_dens = df['rel_dens'].to_numpy(dtype=float)
             #FIXME: implement staircase reprensentation for the density, as is done for accu.
             self.dens = interp(self.depth_mid, self.dens_depth, self.dens_dens)
+        else:
+            filename = pccfg.datadir+self.label+'/compaction_factor.txt'
+            try:
+                df = pd.read_csv(filename, sep=None, comment='#', engine='python')
+                self.dens_depth = df['depth'].to_numpy(dtype=float)
+                self.dens_dens = df['factor'].to_numpy(dtype=float)
+                self.dens = interp(self.depth_mid, self.dens_depth, self.dens_dens)
+            except:
+                self.dens = np.ones_like(self.depth_mid)
+            #FIXME: implement staircase reprensentation for the density, as is done for accu.
+
+        if self.archive == 'icecore':
 
             if self.calc_tau:
                 self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
@@ -744,7 +756,7 @@ class Site(object):
         if self.archive == 'icecore':
             self.icelayerthick_model = self.tau_model*self.a_model/self.dens
         else:
-            self.icelayerthick_model = self.a_model
+            self.icelayerthick_model = self.a_model/self.dens
         self.age_model = self.age_top+pccfg.way*np.cumsum(np.concatenate((np.array([0]),\
                          self.depth_inter/self.icelayerthick_model)))
 
@@ -905,7 +917,7 @@ class Site(object):
         if self.archive == 'icecore':
             self.icelayerthick = self.tau*self.accu/self.dens
         else:
-            self.icelayerthick = self.accu
+            self.icelayerthick = self.accu/self.dens
         self.agedens = 1/self.icelayerthick
         self.age = self.age_top+pccfg.way*np.cumsum(np.concatenate((np.array([0]),\
                     self.depth_inter*self.agedens)))
