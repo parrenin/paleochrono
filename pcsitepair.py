@@ -275,7 +275,10 @@ class SitePair(object):
             
             fig, ax = mpl.subplots()
             mpl.xlabel(self.site1.label+' '+self.site1.age_labelsp+'age ('+pccfg.age_unit+' '+pccfg.age_unit_ref+')')
-            mpl.ylabel(self.site2.label+' '+self.site2.age_labelsp+'age ('+pccfg.age_unit+' '+pccfg.age_unit_ref+')')
+            if self.iceicehorizons_phasing.any():
+                mpl.ylabel(self.site2.label+' '+self.site2.age_labelsp+'age + phasing ('+pccfg.age_unit+' '+pccfg.age_unit_ref+')')
+            else:
+                mpl.ylabel(self.site2.label+' '+self.site2.age_labelsp+'age ('+pccfg.age_unit+' '+pccfg.age_unit_ref+')')
             if np.size(self.iceicehorizons_depth1) > 0:
                 if pccfg.show_initial:
                     mpl.plot(self.site1.fct_age_init(self.iceicehorizons_depth1),
@@ -302,12 +305,12 @@ class SitePair(object):
                               -self.iceicehorizons_sigma[i], color=pccfg.color_ci,
                               width=0.0, head_length=0.0, head_width=0.0)
                 # This is the phasing
-                xstart = self.site1.fct_iceage(self.iceicehorizons_depth1)
-                ystart = self.site2.fct_iceage(self.iceicehorizons_depth2)+self.iceicehorizons_phasing
-                for i in range(np.size(self.iceicehorizons_depth1)):
-                    mpl.arrow(xstart[i], ystart[i], 0., -self.iceicehorizons_phasing[i],
-                              color=pccfg.color_opt, 
-                              width=0.001, head_length=0.0, head_width=0.0)
+                # xstart = self.site1.fct_age(self.iceicehorizons_depth1)
+                # ystart = self.site2.fct_age(self.iceicehorizons_depth2)+self.iceicehorizons_phasing
+                # for i in range(np.size(self.iceicehorizons_depth1)):
+                #     mpl.arrow(xstart[i], ystart[i], 0., -self.iceicehorizons_phasing[i],
+                #               color=pccfg.color_opt, 
+                #               width=0.001, head_length=0.0, head_width=0.0)
             x_low, x_up, y_low, y_up = mpl.axis()
 #            x_low = self.site1.age_top
 #            y_low = self.site2.age_top
@@ -352,8 +355,12 @@ class SitePair(object):
                 fig, ax = mpl.subplots()
                 mpl.xlabel(self.site1.label+' '+self.site1.age2_labelsp+'age ('+pccfg.age_unit+' '+
                            pccfg.age_unit_ref+')')
-                mpl.ylabel(self.site2.label+' '+self.site2.age2_labelsp+'age ('+pccfg.age_unit+' '+
-                           pccfg.age_unit_ref+')')
+                if self.airairhorizons_phasing.any():
+                    mpl.ylabel(self.site2.label+' '+self.site2.age2_labelsp+'age + phasing ('+pccfg.age_unit+' '+
+                               pccfg.age_unit_ref+')')
+                else:
+                    mpl.ylabel(self.site2.label+' '+self.site2.age2_labelsp+'age ('+pccfg.age_unit+' '+
+                               pccfg.age_unit_ref+')')
                 if np.size(self.airairhorizons_depth1) > 0:
                     if pccfg.show_initial:
                         mpl.plot(self.site1.fct_airage_init(self.airairhorizons_depth1),
@@ -387,12 +394,12 @@ class SitePair(object):
                                   -self.airairhorizons_sigma[i], color=pccfg.color_ci,
                                   width=0.0, head_length=0.0, head_width=0.0)
                     # This is the phasing
-                    xstart = self.site1.fct_airage(self.airairhorizons_depth1)
-                    ystart = self.site2.fct_airage(self.airairhorizons_depth2)+self.airairhorizons_phasing
-                    for i in range(np.size(self.airairhorizons_depth1)):
-                        mpl.arrow(xstart[i], ystart[i], 0., -self.airairhorizons_phasing[i],
-                                  color=pccfg.color_opt, 
-                                  width=0.001, head_length=0.0, head_width=0.0)
+                    # xstart = self.site1.fct_airage(self.airairhorizons_depth1)
+                    # ystart = self.site2.fct_airage(self.airairhorizons_depth2)+self.airairhorizons_phasing
+                    # for i in range(np.size(self.airairhorizons_depth1)):
+                    #     mpl.arrow(xstart[i], ystart[i], 0., -self.airairhorizons_phasing[i],
+                    #               color=pccfg.color_opt, 
+                    #               width=0.001, head_length=0.0, head_width=0.0)
                 x_low, x_up, y_low, y_up = mpl.axis()
 #                x_low = self.site1.age_top
 #                y_low = self.site2.age_top
@@ -440,8 +447,12 @@ class SitePair(object):
                 fig, ax = mpl.subplots()
                 mpl.xlabel(self.site1.label+' '+self.site1.age_labelsp+'age ('+pccfg.age_unit+' '+
                            pccfg.age_unit_ref+')')
-                mpl.ylabel(self.site2.label+' '+self.site2.age2_labelsp+'age ('+pccfg.age_unit+' '+
-                           pccfg.age_unit_ref+')')
+                if self.iceairhorizons_phasing.any():
+                    mpl.ylabel(self.site2.label+' '+self.site2.age2_labelsp+'age + phasing ('+pccfg.age_unit+' '+
+                               pccfg.age_unit_ref+')')
+                else:
+                    mpl.ylabel(self.site2.label+' '+self.site2.age2_labelsp+'age ('+pccfg.age_unit+' '+
+                               pccfg.age_unit_ref+')')
                 if np.size(self.iceairhorizons_depth1) > 0:
                     if pccfg.show_initial:
                         mpl.plot(self.site1.fct_age_init(self.iceairhorizons_depth1),
@@ -473,13 +484,12 @@ class SitePair(object):
                                   -self.iceairhorizons_sigma[i], color=pccfg.color_ci,
                                   width=0.0, head_length=0.0, head_width=0.0)
                     # This is the phasing
-                    xstart = self.site1.fct_iceage(self.iceairhorizons_depth1)
-                    ystart = self.site2.fct_airage(self.iceairhorizons_depth2)+self.iceairhorizons_phasing
-                    for i in range(np.size(self.iceairhorizons_depth1)):
-                        mpl.arrow(xstart[i], ystart[i], 0., -self.iceairhorizons_phasing[i],
-                                  color=pccfg.color_opt, 
-                                  width=0.001, head_length=0.0, head_width=0.0)
-
+                    # xstart = self.site1.fct_age(self.iceairhorizons_depth1)
+                    # ystart = self.site2.fct_airage(self.iceairhorizons_depth2)+self.iceairhorizons_phasing
+                    # for i in range(np.size(self.iceairhorizons_depth1)):
+                    #     mpl.arrow(xstart[i], ystart[i], 0., -self.iceairhorizons_phasing[i],
+                    #               color=pccfg.color_opt, 
+                    #               width=0.001, head_length=0.0, head_width=0.0)
                 x_low, x_up, y_low, y_up = mpl.axis()
 #                x_low = self.site1.age_top
 #                y_low = self.site2.age_top
@@ -527,8 +537,12 @@ class SitePair(object):
                 fig, ax = mpl.subplots()
                 mpl.xlabel(self.site1.label+' '+self.site1.age2_labelsp+'age ('+pccfg.age_unit+' '+
                            pccfg.age_unit_ref+')')
-                mpl.ylabel(self.site2.label+' '+self.site2.age_labelsp+'age ('+pccfg.age_unit+' '+
-                           pccfg.age_unit_ref+')')
+                if self.airicehorizons_phasing.any():
+                    mpl.ylabel(self.site2.label+' '+self.site2.age_labelsp+'age + phasing ('+pccfg.age_unit+' '+
+                               pccfg.age_unit_ref+')')
+                else:
+                    mpl.ylabel(self.site2.label+' '+self.site2.age_labelsp+'age ('+pccfg.age_unit+' '+
+                               pccfg.age_unit_ref+')')
                 if np.size(self.airicehorizons_depth1) > 0:
                     if pccfg.show_initial:
                         mpl.plot(self.site1.fct_airage_init(self.airicehorizons_depth1),
@@ -559,12 +573,12 @@ class SitePair(object):
                                   -self.airicehorizons_sigma[i], color=pccfg.color_ci,
                                   width=0.0, head_length=0.0, head_width=0.0)
                     # This is the phasing
-                    xstart = self.site1.fct_airage(self.airicehorizons_depth1)
-                    ystart = self.site2.fct_iceage(self.airicehorizons_depth2)+self.airicehorizons_phasing
-                    for i in range(np.size(self.airicehorizons_depth1)):
-                        mpl.arrow(xstart[i], ystart[i], 0., -self.airicehorizons_phasing[i],
-                                  color=pccfg.color_opt, 
-                                  width=0.001, head_length=0.0, head_width=0.0)
+                    # xstart = self.site1.fct_airage(self.airicehorizons_depth1)
+                    # ystart = self.site2.fct_age(self.airicehorizons_depth2)+self.airicehorizons_phasing
+                    # for i in range(np.size(self.airicehorizons_depth1)):
+                    #     mpl.arrow(xstart[i], ystart[i], 0., -self.airicehorizons_phasing[i],
+                    #               color=pccfg.color_opt, 
+                    #               width=0.001, head_length=0.0, head_width=0.0)
                 x_low, x_up, y_low, y_up = mpl.axis()
 #                x_low = self.site1.age_top
 #                y_low = self.site2.age_top
