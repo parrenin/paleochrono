@@ -281,26 +281,33 @@ class SitePair(object):
                     mpl.plot(self.site1.fct_age_init(self.iceicehorizons_depth1),
                                  self.site2.fct_age_init(self.iceicehorizons_depth2)+\
                                      self.iceicehorizons_phasing,
-                                 color=pccfg.color_init, linestyle='', marker='o', markersize=2,
+                                 color=pccfg.color_init, linestyle='', marker='o', markersize=1,
                                  label="Initial")
                 mpl.plot(self.site1.fct_age_model(self.iceicehorizons_depth1),
                              self.site2.fct_age_model(self.iceicehorizons_depth2)+\
                                  self.iceicehorizons_phasing,
-                             color=pccfg.color_mod, linestyle='', marker='o', markersize=2,
+                             color=pccfg.color_mod, linestyle='', marker='o', markersize=1,
                              label="Prior")
                 mpl.errorbar(self.site1.fct_age(self.iceicehorizons_depth1),
                              self.site2.fct_age(self.iceicehorizons_depth2)+\
                                  self.iceicehorizons_phasing, color=pccfg.color_opt,
                              ecolor=pccfg.color_ci,
                              xerr=np.zeros(np.size(self.iceicehorizons_depth1)),
-                             linestyle='', marker='o', markersize=2,
+                             linestyle='', marker='o', markersize=1,
                              label="Posterior $\\pm\\sigma$")
-                xstart = self.site1.fct_age(self.iceicehorizons_depth1)-self.iceicehorizons_sigma/2 #FIXME: This should be sqrt(2), not 2.
+                xstart = self.site1.fct_age(self.iceicehorizons_depth1)-self.iceicehorizons_sigma/2
                 ystart = self.site2.fct_age(self.iceicehorizons_depth2)+self.iceicehorizons_phasing+self.iceicehorizons_sigma/2
                 for i in range(np.size(self.iceicehorizons_depth1)):
                     mpl.arrow(xstart[i], ystart[i], self.iceicehorizons_sigma[i],
                               -self.iceicehorizons_sigma[i], color=pccfg.color_ci,
                               width=0.0, head_length=0.0, head_width=0.0)
+                # This is the phasing
+                xstart = self.site1.fct_iceage(self.iceicehorizons_depth1)
+                ystart = self.site2.fct_iceage(self.iceicehorizons_depth2)+self.iceicehorizons_phasing
+                for i in range(np.size(self.iceicehorizons_depth1)):
+                    mpl.arrow(xstart[i], ystart[i], 0., -self.iceicehorizons_phasing[i],
+                              color=pccfg.color_opt, 
+                              width=0.001, head_length=0.0, head_width=0.0)
             x_low, x_up, y_low, y_up = mpl.axis()
 #            x_low = self.site1.age_top
 #            y_low = self.site2.age_top
@@ -354,20 +361,22 @@ class SitePair(object):
                                          self.airairhorizons_phasing,
                                      color=pccfg.color_init,
                                      linestyle='',
-                                     marker='o', markersize=2, label="Initial")
+                                     marker='o', markersize=1, label="Initial")
                     mpl.plot(self.site1.fct_airage_model(self.airairhorizons_depth1),
                                  self.site2.fct_airage_model(self.airairhorizons_depth2)+\
                                      self.airairhorizons_phasing,
                                  color=pccfg.color_mod,
-                                 linestyle='', marker='o', markersize=2,
+                                 linestyle='', marker='o', markersize=1,
                                  label="Prior")
+                    # This is the posterior, the errorbar is fake, just for the legend
                     mpl.errorbar(self.site1.fct_airage(self.airairhorizons_depth1),
                                  self.site2.fct_airage(self.airairhorizons_depth2)+\
                                      self.airairhorizons_phasing,
                                  color=pccfg.color_opt, ecolor=pccfg.color_ci,
                                  xerr=np.zeros_like(self.airairhorizons_sigma),
-                                 linestyle='', marker='o', markersize=2,
+                                 linestyle='', marker='o', markersize=1,
                                  label="Posterior $\\pm\\sigma$")
+                    # This is the actual error bar
                     xstart = self.site1.fct_airage(self.airairhorizons_depth1)-\
                                  self.airairhorizons_sigma/2
                     ystart = self.site2.fct_airage(self.airairhorizons_depth2)+\
@@ -377,6 +386,13 @@ class SitePair(object):
                         mpl.arrow(xstart[i], ystart[i], self.airairhorizons_sigma[i],
                                   -self.airairhorizons_sigma[i], color=pccfg.color_ci,
                                   width=0.0, head_length=0.0, head_width=0.0)
+                    # This is the phasing
+                    xstart = self.site1.fct_airage(self.airairhorizons_depth1)
+                    ystart = self.site2.fct_airage(self.airairhorizons_depth2)+self.airairhorizons_phasing
+                    for i in range(np.size(self.airairhorizons_depth1)):
+                        mpl.arrow(xstart[i], ystart[i], 0., -self.airairhorizons_phasing[i],
+                                  color=pccfg.color_opt, 
+                                  width=0.001, head_length=0.0, head_width=0.0)
                 x_low, x_up, y_low, y_up = mpl.axis()
 #                x_low = self.site1.age_top
 #                y_low = self.site2.age_top
@@ -433,19 +449,19 @@ class SitePair(object):
                                          self.iceairhorizons_phasing,
                                      color=pccfg.color_init,
                                      linestyle='',
-                                     marker='o', markersize=2, label="Initial")
+                                     marker='o', markersize=1, label="Initial")
                     mpl.plot(self.site1.fct_age_model(self.iceairhorizons_depth1),
                                  self.site2.fct_airage_model(self.iceairhorizons_depth2)+\
                                      self.iceairhorizons_phasing,
                                  color=pccfg.color_mod,
-                                 linestyle='', marker='o', markersize=2,
+                                 linestyle='', marker='o', markersize=1,
                                  label="Prior")
                     mpl.errorbar(self.site1.fct_age(self.iceairhorizons_depth1),
                                  self.site2.fct_airage(self.iceairhorizons_depth2)+\
                                      self.iceairhorizons_phasing,
                                  color=pccfg.color_opt, ecolor=pccfg.color_ci,
                                  xerr=np.zeros_like(self.iceairhorizons_sigma),
-                                 linestyle='', marker='o', markersize=2,
+                                 linestyle='', marker='o', markersize=1,
                                  label="Posterior $\\pm\\sigma$")
                     xstart = self.site1.fct_age(self.iceairhorizons_depth1)-\
                                  self.iceairhorizons_sigma/2
@@ -455,7 +471,15 @@ class SitePair(object):
                     for i in range(np.size(self.iceairhorizons_depth1)):
                         mpl.arrow(xstart[i], ystart[i], self.iceairhorizons_sigma[i],
                                   -self.iceairhorizons_sigma[i], color=pccfg.color_ci,
-                                  width=0.0, head_length=0.0, head_width=0.0)                    
+                                  width=0.0, head_length=0.0, head_width=0.0)
+                    # This is the phasing
+                    xstart = self.site1.fct_iceage(self.iceairhorizons_depth1)
+                    ystart = self.site2.fct_airage(self.iceairhorizons_depth2)+self.iceairhorizons_phasing
+                    for i in range(np.size(self.iceairhorizons_depth1)):
+                        mpl.arrow(xstart[i], ystart[i], 0., -self.iceairhorizons_phasing[i],
+                                  color=pccfg.color_opt, 
+                                  width=0.001, head_length=0.0, head_width=0.0)
+
                 x_low, x_up, y_low, y_up = mpl.axis()
 #                x_low = self.site1.age_top
 #                y_low = self.site2.age_top
@@ -511,19 +535,19 @@ class SitePair(object):
                                      self.site2.fct_age_init(self.airicehorizons_depth2)+\
                                          self.airicehorizons_phasing,
                                      color=pccfg.color_init,
-                                     linestyle='', marker='o', markersize=2, label="Initial")
+                                     linestyle='', marker='o', markersize=1, label="Initial")
                     mpl.plot(self.site1.fct_airage_model(self.airicehorizons_depth1),
                                  self.site2.fct_age_model(self.airicehorizons_depth2)+\
                                      self.airicehorizons_phasing,
                                  color=pccfg.color_mod,
-                                 linestyle='', marker='o', markersize=2,
+                                 linestyle='', marker='o', markersize=1,
                                  label="Prior")
                     mpl.errorbar(self.site1.fct_airage(self.airicehorizons_depth1),
                                  self.site2.fct_age(self.airicehorizons_depth2)+\
                                      self.airicehorizons_phasing,
                                  color=pccfg.color_opt, ecolor=pccfg.color_ci,
                                  xerr=np.zeros_like(self.airicehorizons_sigma),
-                                 linestyle='', marker='o', markersize=2,
+                                 linestyle='', marker='o', markersize=1,
                                  label="Posterior $\\pm\\sigma$")
                     xstart = self.site1.fct_airage(self.airicehorizons_depth1)-\
                                  self.airicehorizons_sigma/2
@@ -534,6 +558,13 @@ class SitePair(object):
                         mpl.arrow(xstart[i], ystart[i], self.airicehorizons_sigma[i],
                                   -self.airicehorizons_sigma[i], color=pccfg.color_ci,
                                   width=0.0, head_length=0.0, head_width=0.0)
+                    # This is the phasing
+                    xstart = self.site1.fct_airage(self.airicehorizons_depth1)
+                    ystart = self.site2.fct_iceage(self.airicehorizons_depth2)+self.airicehorizons_phasing
+                    for i in range(np.size(self.airicehorizons_depth1)):
+                        mpl.arrow(xstart[i], ystart[i], 0., -self.airicehorizons_phasing[i],
+                                  color=pccfg.color_opt, 
+                                  width=0.001, head_length=0.0, head_width=0.0)
                 x_low, x_up, y_low, y_up = mpl.axis()
 #                x_low = self.site1.age_top
 #                y_low = self.site2.age_top
