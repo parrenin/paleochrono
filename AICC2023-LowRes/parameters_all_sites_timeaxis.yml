@@ -1,0 +1,33 @@
+calc_deporate: False           #If you want to calculate the prior deporate.
+calc_thinning: False         #If you want to calculate the prior thinning.
+calc_lid: False         #If you want to calculate the prior lock-in depth.
+dens_firn: 0.7            #Average density of the firn
+start: 'prior'  #prior, restart or random
+calc_deporate_method: 'staircase' #linear or staircase. Define the prior deporate representation.
+
+corr_deporate_grid: #Age grid for the deporate correction function
+    type: 'linear' #regular or linear
+    start: -999950.
+    end:  50.
+    nb_steps: 1000 
+    ratio: 0.1 #Ratio of the first step size to the average step size
+corr_lid_grid: #Age grid for the LID correction function
+    type: 'linear'
+    start: -999950.
+    end: 50.
+    nb_steps: 1000
+    ratio: 0.1
+corr_thinning_grid: #Depth grid for the thinning correction function
+    type: 'linear'
+    start: 0.
+    end: 1.
+    nb_steps: 100
+    ratio: 1.9
+
+#Parameters needed to define the covariance matrices as in AICC2012.
+lambda_thinning: 70
+lambda_deporate: 1000
+lambda_lid: 1000
+depth_unit: 'm'
+age_label: 'ice'
+age2_label: 'air'
