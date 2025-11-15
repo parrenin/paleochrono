@@ -336,8 +336,13 @@ class Site(object):
         self.airage = np.empty_like(self.depth)
 
         if self.archive == 'icecore':
-            filename = pccfg.datadir+self.label+'/density.txt'
-            df = pd.read_csv(filename, sep=None, comment='#', engine='python')
+            try:
+                filename = pccfg.datadir+self.label+'/solid_fraction.txt'
+                df = pd.read_csv(filename, sep=None, comment='#', engine='python')
+            except:
+                filename = pccfg.datadir+self.label+'/density.txt'
+                print("Warning: 'density.txt' filename is deprecated, use 'solid_fraction.txt'")
+                df = pd.read_csv(filename, sep=None, comment='#', engine='python')
             self.dens_depth = df['depth'].to_numpy(dtype=float)
             self.dens_dens = df['rel_dens'].to_numpy(dtype=float)
             #FIXME: implement staircase reprensentation for the density, as is done for accu.
