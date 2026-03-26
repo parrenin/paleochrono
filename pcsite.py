@@ -64,6 +64,8 @@ class Site(object):
         self.corr_lid_age = None
         self.corr_tau_depth = None
         self.lambda_thinning = None
+        self.lambda_thinning_shape = 'constant'
+        self.sigma_thinning_shape = 'iedepth'
         self.accu0 = None
         self.beta = None
         self.pprime = None
@@ -403,7 +405,13 @@ class Site(object):
                     pass
                 self.tau_model = interp(self.depth_mid, self.tau_depth, self.tau_tau)
                 self.tau = self.tau_model
-
+                try:
+                    self.lambda_tau = df['lambda'].to_numpy(dtype=float)
+                    self.lambda_tau = interp(self.depth_mid, self.tau_depth, self.lambda_tau)
+                    self.lambda_thinning_shape = 'import'
+                except:
+                    pass
+                
         self.raw_model()
 
 
@@ -471,11 +479,17 @@ class Site(object):
                 self.sigmap_corr_tau = interp_lin_aver(x_out, self.tau_depth,
                                                  self.tau_sigma)
             except AttributeError:
-                self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
-                                                         self.dens*self.depth_inter)))
-                self.thickness_ie = self.thickness-self.depth[-1]+self.iedepth[-1]
-                self.sigmap_corr_tau=self.k/self.thickness_ie*interp(self.corr_tau_depth,
-                                                                        self.depth, self.iedepth)
+                if self.sigma_thinning_shape == 'iedepth':
+                    self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
+                                                             self.dens*self.depth_inter)))
+                    self.thickness_ie = self.thickness-self.depth[-1]+self.iedepth[-1]
+                    self.sigmap_corr_tau=self.k/self.thickness_ie*interp(self.corr_tau_depth,
+                                                                         self.depth, self.iedepth)
+                elif self.sigma_thinning_shape == 'uiedepth':
+                    self.uiedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
+                                                             self.dens*self.depth_inter/self.tau_model)))
+                    self.sigmap_corr_tau=self.k/self.uiedepth[-1]*interp(self.corr_tau_depth,
+                                                                         self.depth, self.uiedepth)
 
         #Accu correlation matrix
         self.correlation_corr_a = interp(np.abs(np.ones((np.size(self.corr_a_age),\
@@ -491,13 +505,22 @@ class Site(object):
                 np.size(self.corr_lid_age)))*self.corr_lid_age-np.transpose(np.ones((np.size(\
                 self.corr_lid_age),np.size(self.corr_lid_age)))*self.corr_lid_age)),\
                 np.array([0,self.lambda_lid]),np.array([1, 0]))
-            
+
             #Thinning correlation matrix
-            self.correlation_corr_tau = interp(np.abs(np.ones((np.size(self.corr_tau_depth),\
-                np.size(self.corr_tau_depth)))*self.corr_tau_depth-np.transpose(np.ones((np.size(\
-                self.corr_tau_depth),np.size(self.corr_tau_depth)))*self.corr_tau_depth)),\
-                np.array([0,self.lambda_tau]),np.array([1, 0]) )
-    
+            if self.lambda_thinning_shape == 'thinning':
+                self.lambda_tau = self.lambda_tau * self.tau_model
+            elif self.lambda_thinning_shape == 'constant':
+                self.lambda_tau = self.lambda_tau * np.ones_like(self.depth_mid)
+
+            self.correlation_corr_tau = np.ones((np.size(self.corr_tau_depth), 
+                                                       np.size(self.corr_tau_depth)))
+            for i in range(np.size(self.corr_tau_depth)):
+                for j in range(np.size(self.corr_tau_depth)):
+                    lambda_tau = interp((self.corr_tau_depth[i]+self.corr_tau_depth[j])/2, 
+                                        self.depth_mid, self.lambda_tau)
+                    self.correlation_corr_tau[i, j] = interp(np.abs(self.corr_tau_depth[i]-self.corr_tau_depth[j]), 
+                                                             np.array([0,lambda_tau]),np.array([1, 0]) )
+
 
         self.chol_a = cholesky(self.correlation_corr_a)
 #        self.chol_a_lu_piv = lu_factor(self.chol_a) #FIXME: do we always need to do this?
@@ -2118,6 +2141,7 @@ class Site(object):
                                 np.append(self.sigma_tau, self.sigma_tau[-1]),
                                 self.lid, self.sigma_lid,
                                 self.delta_depth, self.sigma_delta_depth,
+                                self.age_model, self.airage_model,
                                 np.append(self.a_model, self.a_model[-1]),
                                 np.append(self.sigma_accu_model, self.sigma_accu_model[-1]),
                                 np.append(self.tau_model, self.tau_model[-1]),
@@ -2139,7 +2163,9 @@ class Site(object):
                                 ''+self.age2_label_+'age\tsigma_'+self.age2_label_+'age'
                                 '\tsigma_delta_age\tdeporate'
                                 '\tsigma_deporate\tthinning\tsigma_thinning\tLID\tsigma_LID'
-                                 '\tdelta_depth\tsigma_delta_depth\tdeporate_model'
+                                 '\tdelta_depth\tsigma_delta_depth'
+                                 '\t'+self.age_label_+'age_model\t'+self.age2_label_+'age_model'
+                                 '\tdeporate_model'
                                  '\tsigma_deporate_model'
                                  '\tthinning_model\tsigma_thinning_model\tLID_model'
                                  '\tsigma_LID_model\t'+self.age_label+'layerthick\t'
