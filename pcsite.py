@@ -349,6 +349,8 @@ class Site(object):
             self.dens_dens = df['rel_dens'].to_numpy(dtype=float)
             #FIXME: implement staircase reprensentation for the density, as is done for accu.
             self.dens = interp(self.depth_mid, self.dens_depth, self.dens_dens)
+            self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
+                                                     self.dens*self.depth_inter)))
         else:
             filename = pccfg.datadir+self.label+'/compaction_factor.txt'
             try:
@@ -363,8 +365,6 @@ class Site(object):
         if self.archive == 'icecore':
 
             if self.calc_tau:
-                self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
-                                                         self.dens*self.depth_inter)))
                 self.iedepth_mid = (self.iedepth[1:]+self.iedepth[:-1])/2
                 self.thickness_ie = self.thickness-self.depth[-1]+self.iedepth[-1]
 
@@ -2132,7 +2132,7 @@ class Site(object):
     def save(self):
         """Save various variables for a site."""
         if self.archive == 'icecore':
-            output = np.vstack((self.depth, self.age, self.sigma_age, self.airage,
+            output = np.vstack((self.depth, self.iedepth, self.age, self.sigma_age, self.airage,
                                 self.sigma_airage,
                                 self.sigma_delta_age,
                                 np.append(self.accu, self.accu[-1]),
@@ -2159,7 +2159,7 @@ class Site(object):
                                 np.append(self.sigma_accu_model, self.sigma_accu_model[-1])))
         with open(pccfg.datadir+self.label+'/output.txt', 'w') as file_save:
             if self.archive == 'icecore':
-                file_save.write('#depth\t'+self.age_label_+'age\tsigma_'+self.age_label_+'age\t'
+                file_save.write('#depth\tiedepth\t'+self.age_label_+'age\tsigma_'+self.age_label_+'age\t'
                                 ''+self.age2_label_+'age\tsigma_'+self.age2_label_+'age'
                                 '\tsigma_delta_age\tdeporate'
                                 '\tsigma_deporate\tthinning\tsigma_thinning\tLID\tsigma_LID'
