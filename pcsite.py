@@ -349,8 +349,10 @@ class Site(object):
             self.dens_dens = df['rel_dens'].to_numpy(dtype=float)
             #FIXME: implement staircase reprensentation for the density, as is done for accu.
             self.dens = interp(self.depth_mid, self.dens_depth, self.dens_dens)
-            self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
-                                                     self.dens*self.depth_inter)))
+            #FIXME: make sure the solid_fraction.txt file start at depth=0
+            self.dens_iedepth = np.cumsum(np.concatenate((np.array([self.dens_depth[0]]), 
+                                        (self.dens_dens[1:]+self.dens_dens[:-1])/2*(self.dens_depth[1:]-self.dens_depth[:-1]))))
+            self.iedepth = np.interp(self.depth, self.dens_depth, self.dens_iedepth)
         else:
             filename = pccfg.datadir+self.label+'/compaction_factor.txt'
             try:
@@ -394,6 +396,7 @@ class Site(object):
             if self.calc_tau:
                 self.zeta = (self.thickness_ie-self.iedepth_mid)/self.thickness_ie
                 self.tau = np.empty_like(self.depth_mid)
+                #FIXME: calculate tau here
             else:
                 filename = pccfg.datadir+self.label+'/thinning.txt'
                 df = pd.read_csv(filename, sep=None, comment='#', engine='python')
@@ -480,12 +483,15 @@ class Site(object):
                                                  self.tau_sigma)
             except AttributeError:
                 if self.sigma_thinning_shape == 'iedepth':
-                    self.iedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
-                                                             self.dens*self.depth_inter)))
                     self.thickness_ie = self.thickness-self.depth[-1]+self.iedepth[-1]
                     self.sigmap_corr_tau=self.k/self.thickness_ie*interp(self.corr_tau_depth,
                                                                          self.depth, self.iedepth)
                 elif self.sigma_thinning_shape == 'uiedepth':
+                    #IFXME: calculate uiedepth_top here. Problem: when tau is calculated and not imported, we might not have tau from the surface.
+                    try:
+                        self.uiedepth_top
+                    except AttributeError:
+                        self.uiedepth_top = self.iedepth_top
                     self.uiedepth = np.cumsum(np.concatenate((np.array([self.iedepth_top]), 
                                                              self.dens*self.depth_inter/self.tau_model)))
                     self.sigmap_corr_tau=self.k/self.uiedepth[-1]*interp(self.corr_tau_depth,
