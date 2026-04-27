@@ -167,10 +167,11 @@ class Site(object):
             self.lambda_a = self.lambda_deporate
         except AttributeError:
             print('WARNING: lambda_a is deprecated. Use lambda_deporate instead.')
-        try:
-            self.lambda_tau = self.lambda_thinning
-        except AttributeError:
-            print('WARNING: lambda_tau is deprecated. Use lambda_thinning instead.')
+        if self.lambda_thinning != None:
+            try:
+                self.lambda_tau = self.lambda_thinning
+            except AttributeError:
+                print('WARNING: lambda_tau is deprecated. Use lambda_thinning instead.')
         try:
             self.calc_tau = self.calc_thinning
         except AttributeError:
