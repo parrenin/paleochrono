@@ -62,6 +62,7 @@ labels = ["depth","age","age_unc"]
 for name in ['age_horizons.txt', 'ice_age_horizons.txt', 'air_age_horizons.txt']:
     convert_file(name, labels)
 convert_file('density.txt', ["depth", "rel_dens"])
+convert_file('solid_fraction.txt', ["depth", "rel_dens"])
 convert_file('deposition.txt', ["depth", "deporate", "rel_unc"])
 convert_file('thinning.txt', ["depth", "thinning", "rel_unc"])
 convert_file('lock_in_depth.txt', ["depth", "LID", "rel_unc"])

@@ -566,7 +566,7 @@ class SitePair(object):
                     xstart = self.site1.fct_airage(self.airicehorizons_depth1)-\
                                  self.airicehorizons_sigma/2
                     ystart = self.site2.fct_age(self.airicehorizons_depth2)+\
-                                 self.iceicehorizons_phasing+\
+                                 self.airicehorizons_phasing+\
                                  self.airicehorizons_sigma/2
                     for i in range(np.size(self.airicehorizons_depth1)):
                         mpl.arrow(xstart[i], ystart[i], self.airicehorizons_sigma[i],
