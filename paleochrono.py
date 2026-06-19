@@ -268,7 +268,7 @@ def jacobian_semi_adjoint(var):
         for i, dlab in enumerate(pccfg.list_sites):
             # Why do we need to sometimes flatten here? Strange.
             D[dlab].var_delta = v[index:index+np.size(D[dlab].variables)]\
-                .flatten()
+                .ravel()
             index = index+np.size(D[dlab].variables)
         for i, dlab in enumerate(pccfg.list_sites):
             # Why do we need to sometimes flatten here? Strange.
@@ -295,7 +295,7 @@ def jacobian_semi_adjoint(var):
 
         index = 0
         for i, dlab in enumerate(pccfg.list_sites):
-            vari[i] = v[index:index+np.size(D[dlab].variables)].flatten()
+            vari[i] = v[index:index+np.size(D[dlab].variables)].ravel()
             index = index+np.size(D[dlab].variables)
             vari[i] = vari[i] +\
                 dot(jac[i, i], v[index:index+RESI_SIZE[i, i]])
@@ -344,7 +344,7 @@ def jacobian_adjoint(var):
         for i, dlab in enumerate(pccfg.list_sites):
             # Why do we need to sometimes flatten here? Strange.
             D[dlab].var_delta = v[index:index+np.size(D[dlab].variables)]\
-                .flatten()
+                .ravel()
             index = index+np.size(D[dlab].variables)
             resi = np.concatenate((resi, D[dlab].var_delta))
             D[dlab].model_delta(D[dlab].var_delta)
@@ -366,7 +366,7 @@ def jacobian_adjoint(var):
 
         index = 0
         for i, dlab in enumerate(pccfg.list_sites):
-            vari[i] = v[index:index+np.size(D[dlab].variables)].flatten()
+            vari[i] = v[index:index+np.size(D[dlab].variables)].ravel()
             index = index+np.size(D[dlab].variables)
             vari[i] = vari[i] + dot(jac[i,i], v[index:index+RESI_SIZE[i,i]])
 #            vari[i] = vari[i] + D[dlab].residuals_adj( v[index:index+RESI_SIZE[i,i]])
